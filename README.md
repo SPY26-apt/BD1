@@ -65,3 +65,22 @@ Para resolver esto, la base de datos gestionará a los **Proveedores** (para ten
 │ + precio_unitario: DECIMAL(8,2) NOT NULL
 │ + subtotal: DECIMAL(10,2) NOT NULL
 └───────────────┘
+```
+
+## 4) Relaciones y cardinalidades (con justificación)
+
+* **CATEGORIA (1) — (N) PRODUCTO**
+  * *Justificación:* Una categoría agrupa a muchos productos, pero un producto específico pertenece a una sola categoría para mantener el inventario lógicamente ordenado.
+* **PROVEEDOR (1) — (N) PRODUCTO**
+  * *Justificación:* Un proveedor puede suministrar múltiples productos. Cada producto está asociado a un proveedor principal para saber a quién dirigir los reclamos o pedidos de reposición.
+* **VENTA (1) — (N) DETALLE_VENTA**
+  * *Justificación:* Un ticket de venta puede contener varios productos (líneas de detalle). Cada línea de detalle pertenece a una única venta registrada.
+* **PRODUCTO (1) — (N) DETALLE_VENTA**
+  * *Justificación:* Un mismo producto del catálogo de la ferretería puede ser vendido en múltiples transacciones distintas a lo largo del tiempo.
+
+## 5) Reglas de negocio y restricciones importantes
+
+* **Control de Stock (Inventario en tiempo real):** Al insertar un nuevo registro en `DETALLE_VENTA`, el sistema debe descontar automáticamente la `cantidad` vendida del `stock_actual` en la tabla `PRODUCTO`. Esto se implementa mediante un `TRIGGER` (Disparador) en la base de datos.
+* **Restricción de Stock Negativo:** El atributo `stock_actual` en la tabla `PRODUCTO` tiene un `CHECK (stock_actual >= 0)`. El sistema rechazará a nivel de base de datos cualquier intento de venta de un producto si la cantidad solicitada supera el stock disponible.
+* **Congelamiento de Precios Históricos:** En la tabla `DETALLE_VENTA` se copia el `precio_unitario` del producto en el momento de la venta. Esto garantiza que, si el precio de un producto cambia en el futuro, el historial financiero de ventas pasadas se mantenga intacto.
+* **Ausencia de Cuentas por Cobrar:** Al ser todas las ventas al contado, no existen estados de "pendiente" o "pagado a medias"; toda fila creada en la tabla `VENTA` se considera una transacción finalizada y abonada al 100%.
