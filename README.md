@@ -2,7 +2,7 @@
 
 ## 1) Narración de requisitos (Descripción del problema y solución)
 
-Al analizar las necesidades de una ferretería local, identifiqué un problema crítico: el negocio lleva el registro de su inventario y ventas en cuadernos, lo que provoca un descontrol total. Se desconoce el stock real de los artículos, se pierden los datos de contacto de quienes suministraron la mercadería, y el cálculo manual al momento de cobrar retrasa la atención al cliente. 
+Al analizar las necesidades de una ferretería local, identifiqué un problema crítico: el negocio lleva el registro de su inventario y ventas en cuadernos, lo que provoca un descontrol total. Se desconoce el stock real de los artículos, se pierden los datos de contacto de quienes suministraron la mercadería, y el cálculo manual al momento de cobrar retrasa la atención al cliente.
 
 Para resolver esto, la base de datos gestionará a los **Proveedores** (para tener sus datos exactos); estructurará el inventario agrupando los **Productos** en **Categorías** (registrando precio y stock real); registrará las **Compras** para aumentar el inventario cuando llega mercadería nueva; y registrará cada **Venta** al mostrador, almacenando el detalle de los artículos vendidos para generar un ticket rápido. El sistema calculará los totales automáticamente y actualizará el stock (sumando en compras y restando en ventas), asegurando que los datos siempre coincidan con la cantidad física en los estantes.
 
@@ -16,6 +16,7 @@ Para resolver esto, la base de datos gestionará a los **Proveedores** (para ten
 
 ## 3) Identificación de Entidades, Atributos, Tipos y PK
 
+```text
 ┌─────────────┐
 │ PROVEEDOR   │
 ├─────────────┤
@@ -63,7 +64,7 @@ Para resolver esto, la base de datos gestionará a los **Proveedores** (para ten
 │ + cantidad: INTEGER NOT NULL CHECK (cantidad > 0)
 │ + costo_unitario: DECIMAL(10,2) NOT NULL
 │ + subtotal: DECIMAL(10,2) NOT NULL
-│ ** PK (id_compra, id_producto) **
+│ ** PK COMPUESTA: (id_compra, id_producto) **
 └────────────────┘
 
 ┌─────────────┐
@@ -84,8 +85,9 @@ Para resolver esto, la base de datos gestionará a los **Proveedores** (para ten
 │ + cantidad: INTEGER NOT NULL CHECK (cantidad > 0)
 │ + precio_unitario: DECIMAL(10,2) NOT NULL
 │ + subtotal: DECIMAL(10,2) NOT NULL
-│ ** PK (id_venta, id_producto) **
+│ ** PK COMPUESTA: (id_venta, id_producto) **
 └───────────────┘
+```
 
 ## 4) Relaciones y cardinalidades
 
@@ -100,7 +102,7 @@ Para resolver esto, la base de datos gestionará a los **Proveedores** (para ten
 ## 5) Reglas de negocio y restricciones importantes
 
 * **Validación de Stock previo a la Venta:** Antes de insertar un registro en `DETALLE_VENTA`, el sistema verificará que exista stock. Si `cantidad > stock_actual`, la venta será rechazada.
-* **Actualización Bidireccional del Inventario (Triggers):** 
+* **Actualización Bidireccional del Inventario (Triggers):**
   * Al confirmar un `DETALLE_VENTA` (salida), se restará la cantidad del `stock_actual`.
   * Al confirmar un `DETALLE_COMPRA` (ingreso), se sumará la cantidad al `stock_actual`.
   * En implementaciones futuras, operaciones de `UPDATE` o `DELETE` sobre los detalles deberán ajustar la diferencia del stock para mantener la consistencia.
