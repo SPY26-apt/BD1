@@ -17,54 +17,54 @@ Para resolver esto, la base de datos gestionará a los **Proveedores** (para ten
 ## 3) Identificación de Entidades, Atributos, Tipos y PK
 
 ```text
-┌─────────────┐
-│ PROVEEDOR   │
-├─────────────┤
-│ + id_proveedor: INTEGER PK (AUTOINCREMENT)
-│ + razon_social: VARCHAR(100) NOT NULL
-│ + nombre_contacto: VARCHAR(100)
-│ + telefono: VARCHAR(20) NOT NULL
-│ + email: VARCHAR(100)
-└─────────────┘
+┌────────────────────────────────────────────┐
+│ PROVEEDOR                                  │
+├────────────────────────────────────────────┤
+│ + id_proveedor: INTEGER PK (AUTOINCREMENT) │
+│ + razon_social: VARCHAR(100) NOT NULL      │
+│ + nombre_contacto: VARCHAR(100)            │
+│ + telefono: VARCHAR(20) NOT NULL           │
+│ + email: VARCHAR(100)                      │
+└────────────────────────────────────────────┘
 
-┌─────────────┐
-│ CATEGORIA   │
-├─────────────┤
-│ + id_categoria: INTEGER PK (AUTOINCREMENT)
-│ + nombre: VARCHAR(50) UNIQUE NOT NULL
-│ + descripcion: VARCHAR(255)
-└─────────────┘
+┌────────────────────────────────────────────┐
+│ CATEGORIA                                  │
+├────────────────────────────────────────────┤
+│ + id_categoria: INTEGER PK (AUTOINCREMENT) │
+│ + nombre: VARCHAR(50) UNIQUE NOT NULL      │
+│ + descripcion: VARCHAR(255)                │
+└────────────────────────────────────────────┘
 
-┌─────────────┐
-│ PRODUCTO    │
-├─────────────┤
-│ + id_producto: INTEGER PK (AUTOINCREMENT)
-│ + codigo_barras: VARCHAR(50) UNIQUE NOT NULL
-│ + nombre: VARCHAR(100) NOT NULL
-│ + id_categoria: INTEGER FK → CATEGORIA(id_categoria) NOT NULL
-│ + id_proveedor: INTEGER FK → PROVEEDOR(id_proveedor) NOT NULL
-│ + precio_unitario: DECIMAL(8,2) CHECK (precio_unitario > 0)
-│ + stock_actual: INTEGER DEFAULT 0 CHECK (stock_actual >= 0)
-└─────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│ PRODUCTO                                                        │
+├─────────────────────────────────────────────────────────────────┤
+│ + id_producto: INTEGER PK (AUTOINCREMENT)                       │
+│ + codigo_barras: VARCHAR(50) UNIQUE NOT NULL                    │
+│ + nombre: VARCHAR(100) NOT NULL                                 │
+│ + id_categoria: INTEGER FK → CATEGORIA(id_categoria) NOT NULL   │
+│ + id_proveedor: INTEGER FK → PROVEEDOR(id_proveedor) NOT NULL   │
+│ + precio_unitario: DECIMAL(8,2) CHECK (precio_unitario > 0)     │
+│ + stock_actual: INTEGER DEFAULT 0 CHECK (stock_actual >= 0)     │
+└─────────────────────────────────────────────────────────────────┘
 
-┌─────────────┐
-│ VENTA       │
-├─────────────┤
-│ + id_venta: INTEGER PK (AUTOINCREMENT)
-│ + fecha_hora: DATETIME DEFAULT CURRENT_TIMESTAMP
-│ + nombre_cliente: VARCHAR(100) DEFAULT 'Consumidor Final'
-│ + total_venta: DECIMAL(10,2) DEFAULT 0
-└─────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│ VENTA                                                           │
+├─────────────────────────────────────────────────────────────────┤
+│ + id_venta: INTEGER PK (AUTOINCREMENT)                          │
+│ + fecha_hora: DATETIME DEFAULT CURRENT_TIMESTAMP                │
+│ + nombre_cliente: VARCHAR(100) DEFAULT 'Consumidor Final'       │
+│ + total_venta: DECIMAL(10,2) DEFAULT 0                          │
+└─────────────────────────────────────────────────────────────────┘
 
-┌───────────────┐
-│ DETALLE_VENTA │
-├───────────────┤
-│ + id_venta: INTEGER FK → VENTA(id_venta) PK parcial
-│ + id_producto: INTEGER FK → PRODUCTO(id_producto) PK parcial
-│ + cantidad: INTEGER CHECK (cantidad > 0) NOT NULL
-│ + precio_unitario: DECIMAL(8,2) NOT NULL
-│ + subtotal: DECIMAL(10,2) NOT NULL
-└───────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│ DETALLE_VENTA                                                   │
+├─────────────────────────────────────────────────────────────────┤
+│ + id_venta: INTEGER FK → VENTA(id_venta) PK parcial             │
+│ + id_producto: INTEGER FK → PRODUCTO(id_producto) PK parcial    │
+│ + cantidad: INTEGER CHECK (cantidad > 0) NOT NULL               │
+│ + precio_unitario: DECIMAL(8,2) NOT NULL                        │
+│ + subtotal: DECIMAL(10,2) NOT NULL                              │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ## 4) Relaciones y cardinalidades (con justificación)
